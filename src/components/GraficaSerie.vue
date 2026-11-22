@@ -25,8 +25,8 @@ const datos = computed(() => {
     const serie = (clave) => props.puntos.map((p) => p[v.campo]?.[clave] ?? null);
     if (props.agrupacion !== 'crudo') {
       // Banda mín–máx: el dataset "máx" se rellena hasta el siguiente ("mín").
-      datasets.push({ label: `${etiquetaCompleta(v)} máx`, data: serie('max'), borderColor: 'transparent', backgroundColor: conAlfa(v.color, 0.15), pointRadius: 0, fill: '+1', yAxisID: eje, banda: true });
-      datasets.push({ label: `${etiquetaCompleta(v)} mín`, data: serie('min'), borderColor: 'transparent', pointRadius: 0, fill: false, yAxisID: eje, banda: true });
+      datasets.push({ label: `${etiquetaCompleta(v)} máx`, data: serie('max'), borderColor: 'transparent', backgroundColor: conAlfa(v.color, 0.15), pointRadius: 0, fill: '+1', spanGaps: true, yAxisID: eje, banda: true });
+      datasets.push({ label: `${etiquetaCompleta(v)} mín`, data: serie('min'), borderColor: 'transparent', pointRadius: 0, fill: false, spanGaps: true, yAxisID: eje, banda: true });
     }
     datasets.push({
       label: etiquetaCompleta(v), data: serie('prom'), borderColor: v.color, backgroundColor: v.color,

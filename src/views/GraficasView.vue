@@ -11,6 +11,8 @@ const filtro = ref(null);
 const serie = ref({ agrupacion: 'crudo', puntos: [] });
 const cargando = ref(false);
 const error = ref('');
+// Número de la última consulta lanzada: solo esa puede actualizar el estado.
+let ultimaConsulta = 0;
 
 const DESCRIPCION = {
   crudo: 'Cada punto es una lectura.',
@@ -20,14 +22,19 @@ const DESCRIPCION = {
 const descripcion = computed(() => DESCRIPCION[serie.value.agrupacion]);
 
 async function cargar({ desde, hasta }) {
+  // Si el usuario cambia el rango mientras una consulta sigue en curso, la respuesta
+  // anterior puede llegar después. Solo la última consulta escribe el estado, para
+  // que una respuesta vieja no pise la nueva ni apague "cargando" antes de tiempo.
+  const id = ++ultimaConsulta;
   cargando.value = true;
   error.value = '';
   try {
-    serie.value = await hornoApi.serie(desde, hasta);
+    const respuesta = await hornoApi.serie(desde, hasta);
+    if (id === ultimaConsulta) serie.value = respuesta;
   } catch (err) {
-    error.value = mensajeDeError(err, 'No se pudo cargar la serie');
+    if (id === ultimaConsulta) error.value = mensajeDeError(err, 'No se pudo cargar la serie');
   } finally {
-    cargando.value = false;
+    if (id === ultimaConsulta) cargando.value = false;
   }
 }
 

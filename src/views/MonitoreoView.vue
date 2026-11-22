@@ -13,17 +13,25 @@ const cargando = ref(false);
 const error = ref('');
 const actualizado = ref(null);
 let temporizador = null;
+// Número de la última consulta lanzada: solo esa puede actualizar el estado.
+let ultimaConsulta = 0;
 
 async function cargar() {
+  // Un refresco lento no debe pisar a uno posterior: solo la última consulta escribe
+  // el estado y libera "cargando".
+  const id = ++ultimaConsulta;
   cargando.value = true;
   try {
-    datos.value = await hornoApi.ultima();
-    actualizado.value = new Date();
-    error.value = '';
+    const respuesta = await hornoApi.ultima();
+    if (id === ultimaConsulta) {
+      datos.value = respuesta;
+      actualizado.value = new Date();
+      error.value = '';
+    }
   } catch (err) {
-    error.value = mensajeDeError(err, 'No se pudo consultar la última lectura');
+    if (id === ultimaConsulta) error.value = mensajeDeError(err, 'No se pudo consultar la última lectura');
   } finally {
-    cargando.value = false;
+    if (id === ultimaConsulta) cargando.value = false;
   }
 }
 
