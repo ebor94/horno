@@ -62,7 +62,7 @@ const variablesDe = (grupo) => VARIABLES.filter((v) => v.grupo === grupo);
 <template>
   <div class="space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <EstadoRegistro class="flex-1" :minutos="datos.minutosSinDatos" :registrado-en="datos.lectura?.registrado_en ?? null" />
+      <EstadoRegistro class="flex-1" :minutos="datos.minutosSinDatos" :registrado-en="datos.lectura?.registrado_en ?? null" :sin-conexion="Boolean(error)" />
       <button type="button" class="sv-btn-secondary" :disabled="cargando" @click="cargar">
         <ArrowPathIcon :class="['h-4 w-4', cargando && 'animate-spin']" /> Actualizar
       </button>

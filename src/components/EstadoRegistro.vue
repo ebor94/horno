@@ -6,16 +6,19 @@ import { estadoRegistro } from '@/utils/estado';
 const props = defineProps({
   minutos: { type: Number, default: null },
   registradoEn: { type: String, default: null },
+  // True si la última consulta falló: el estado ya no se puede confirmar.
+  sinConexion: { type: Boolean, default: false },
 });
 
-const estado = computed(() => estadoRegistro(props.minutos));
+const estado = computed(() => estadoRegistro(props.minutos, { sinConexion: props.sinConexion }));
 const ESTILOS = {
   ok: 'bg-primary-50 border-primary-200 text-primary-800',
   alerta: 'bg-amber-50 border-amber-200 text-amber-800',
   critico: 'bg-red-50 border-red-200 text-red-800',
   'sin-datos': 'bg-gray-50 border-gray-200 text-text2',
+  'sin-conexion': 'bg-gray-100 border-gray-300 text-text2',
 };
-const PUNTO = { ok: 'bg-primary-500', alerta: 'bg-warning', critico: 'bg-danger', 'sin-datos': 'bg-gray-400' };
+const PUNTO = { ok: 'bg-primary-500', alerta: 'bg-warning', critico: 'bg-danger', 'sin-datos': 'bg-gray-400', 'sin-conexion': 'bg-gray-500' };
 </script>
 
 <template>

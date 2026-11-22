@@ -12,6 +12,25 @@ describe('estadoRegistro', () => {
     expect(estadoRegistro(90).texto).toMatch(/1 h 30 min/);
     expect(estadoRegistro(90).texto).toMatch(/eServer/);
   });
+
+  it('sin conexión con el servidor no muestra "ok" aunque los minutos sean recientes', () => {
+    expect(estadoRegistro(3, { sinConexion: true }).nivel).toBe('sin-conexion');
+  });
+
+  it('sin conexión sin lecturas previas sigue siendo "sin-conexion"', () => {
+    expect(estadoRegistro(null, { sinConexion: true }).nivel).toBe('sin-conexion');
+  });
+
+  it('sin conexión devuelve el texto que indica que no se puede confirmar el registro', () => {
+    expect(estadoRegistro(3, { sinConexion: true }).texto).toBe(
+      'Sin conexión con el servidor: no se puede confirmar si el horno está registrando',
+    );
+  });
+
+  it('sin opciones se comporta igual que con sinConexion false', () => {
+    expect(estadoRegistro(3)).toEqual(estadoRegistro(3, { sinConexion: false }));
+    expect(estadoRegistro(3).nivel).toBe('ok');
+  });
 });
 
 describe('formatearDuracion', () => {

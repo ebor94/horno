@@ -7,7 +7,10 @@ export function formatearDuracion(min) {
   return `${Math.floor(horas / 24)} d ${horas % 24} h`;
 }
 
-export function estadoRegistro(minutos) {
+// Si no hay conexión con el servidor no se puede afirmar nada sobre el registro:
+// se muestra un estado neutro aunque los minutos de la última lectura conocida sean recientes.
+export function estadoRegistro(minutos, { sinConexion = false } = {}) {
+  if (sinConexion) return { nivel: 'sin-conexion', texto: 'Sin conexión con el servidor: no se puede confirmar si el horno está registrando' };
   if (minutos === null || minutos === undefined) return { nivel: 'sin-datos', texto: 'Aún no hay lecturas registradas' };
   if (minutos < 10) return { nivel: 'ok', texto: 'Registrando con normalidad' };
   if (minutos <= 30) return { nivel: 'alerta', texto: `Sin datos nuevos hace ${minutos} min` };
